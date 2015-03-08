@@ -24,7 +24,19 @@
         // your own.
         var appid = "7b471ccd-186d-435d-9fef-ffc267778c07";
         var endpointId;
-
+        //get location
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else { 
+                $("#status").html("Geolocation is not supported by this browser.");
+            }
+        }
+        //show the lat and long
+        function showPosition(position) {
+            $("#status").append("<br>Latitude: " + position.coords.latitude + 
+            "<br>Longitude: " + position.coords.longitude);  
+        }
         // Create the client object using the App ID 
         var client = respoke.createClient({
             appId: appid,
@@ -44,12 +56,13 @@
         });
 
         // Connect to Respoke when the user clicks "connect"
-        $("#doLogin").onLoad(function() {
+        $(document).ready(function() {
             $("#status").html("Connecting...");
-            endpointId = $("#endpoint").val();
+            endpointId = Math.random().toString(36).substring(7);
             client.connect({
                 endpointId: endpointId // your username is the endpoint
             });
+            showPosition(getLocation());
         });
 
         // Send message

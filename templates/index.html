@@ -40,10 +40,10 @@
 			}
 		}
 		//show the lat and long
-		function showPosition(position) {
-			$("#status").append("<br>Latitude: " + position.coords.latitude.toFixed(3) + 
-			"<br>Longitude: " + position.coords.longitude.toFixed(3));  
-		}
+//		function showPosition(position) {
+//			$("#status").append("<br>Latitude: " + position.coords.latitude.toFixed(3) + 
+//			"<br>Longitude: " + position.coords.longitude.toFixed(3));  
+//		}
 		// Create the client object using the App ID 
 		var client = respoke.createClient({
 			appId: appid,
@@ -101,8 +101,8 @@
 			} else {
 				localStorage.endpointId = Math.random().toString(36).substring(7);
 				endpointId = localStorage.endpointId;
-				sessionStorage.latitude = position.coords.latitude;
-				sessionStorage.longitude = position.coords.longitude;
+//				sessionStorage.latitude = position.coords.latitude;
+//				sessionStorage.longitude = position.coords.longitude;
 			}
 			client.connect({
 				endpointId: endpointId // your username is the endpoint

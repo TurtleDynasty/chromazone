@@ -31,13 +31,3 @@ button {
     background-color: #efefef;
     color: #333;
 }
-
-
-video {
-    width: 300px;
-    margin-right: 20px;
-}
-
-#remoteVideoSource {
-    float: left;
-}

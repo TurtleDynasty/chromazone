@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 
 <head>
+    <!-- Respoke client library -->
+    <script src="https://cdn.respoke.io/respoke.min.js"></script>
 
+    <!-- jQuery, for this example -->
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    
+    <!-- Some simple styles to make things perty -->
+    <link rel="stylesheet" type="text/css" href="../static/style.css">
 </head>
 
 <body>
@@ -13,96 +20,83 @@
     
     <div id="messaging">
         <ul id="messages"></ul><br />
-        <input id="remoteId" placeholder="User to Call" type="text" /><br/>
+        <input id="remoteId" placeholder="User to Message" type="text" /><br/>
         <textarea id="textToSend" placeholder="Message to Send" rows="2"></textarea><br/>
         <button id='sendMessage'>Send Message</button>
     </div>
+	<script>
+		// App ID value from the dev portal. You can play
+		// around with the supplied ID or replace it with
+		// your own.
+		var appid = "c5079ec6-3404-4e72-9061-78b7e3e87472";
+		var endpointId;
+		//get location
+		function getLocation() {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(showPosition);
+			} else { 
+				$("#status").html("Geolocation is not supported by this browser.");
+			}
+		}
+		//show the lat and long
+		function showPosition(position) {
+			$("#status").append("<br>Latitude: " + position.coords.latitude + 
+			"<br>Longitude: " + position.coords.longitude);  
+		}
+		// Create the client object using the App ID 
+		var client = respoke.createClient({
+			appId: appid,
+			developmentMode: true
+		});
 
-    <script type="text/javascript">
-        // App ID value from the dev portal. You can play
-        // around with the supplied ID or replace it with
-        // your own.
-        var appid = "7b471ccd-186d-435d-9fef-ffc267778c07";
-        var endpointId;
-        //get location
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
-            } else { 
-                $("#status").html("Geolocation is not supported by this browser.");
-            }
-        }
-        //show the lat and long
-        function showPosition(position) {
-            $("#status").append("<br>Latitude: " + position.coords.latitude + 
-            "<br>Longitude: " + position.coords.longitude);  
-        }
-        // Create the client object using the App ID 
-        var client = respoke.createClient({
-            appId: appid,
-            developmentMode: true
-        });
+		// "connect" event fired after successful connection to Respoke
+		client.listen('connect', function() {
+			$("#status").html("Connected to Respoke as \"" + endpointId + "\"");
+		});
 
-        // "connect" event fired after successful connection to Respoke
-        client.listen('connect', function() {
-            $("#status").html("Connected to Respoke as \"" + endpointId + "\"");
-        });
+		// Listen for incoming messages
+		client.listen('message', function(evt) {
+			$("#messages").append(
+				"<li>" + evt.message.message + "</li>"
+			);
+		});
 
-        // Listen for incoming messages
-        client.listen('message', function(evt) {
-            $("#messages").append(
-                "<li>" + evt.message.message + "</li>"
-            );
-        });
+		// Connect to Respoke when the user clicks "connect"
+		$("#doLogin").click(function() {
+			$("#status").html("Connecting...");
+			endpointId = $("#endpoint").val;
+			client.connect({
+				endpointId: endpointId // your username is the endpoint
+			});
+			showPosition(getLocation());
+		});
 
-        // Connect to Respoke when the user clicks "connect"
-        $("#doLogin").click(function() {
-            $("#status").html("Connecting...");
-            endpointId = $("#endpoint").val;
-            client.connect({
-                endpointId: endpointId // your username is the endpoint
-            });
-            showPosition(getLocation());
-        });
+		// Send message
+		$("#sendMessage").click(function() {
+			// Get the recipients name
+			var remote = $("#remoteId").val();
 
-        // Send message
-        $("#sendMessage").click(function() {
-            // Get the recipients name
-            var remote = $("#remoteId").val();
+			// Make an endpoint for that recipient
+			var endpoint = client.getEndpoint({
+				id: remote
+			});
 
-            // Make an endpoint for that recipient
-            var endpoint = client.getEndpoint({
-                id: remote
-            });
+			// Grab the text to send
+			var messageText = $("#textToSend").val();
 
-            // Grab the text to send
-            var messageText = $("#textToSend").val();
+			// Send it
+			endpoint.sendMessage({
+				message: messageText
+			});
 
-            // Send it
-            endpoint.sendMessage({
-                message: messageText
-            });
+			// Show yourself the message
+			$("#messages").append(
+				"<li>" + messageText + "</li>"
+			);
 
-            // Show yourself the message
-            $("#messages").append(
-                "<li>" + messageText + "</li>"
-            );
-
-            // Clear the text you just sent
-            $("#textToSend").val('');
-        });
-    </script>
+			// Clear the text you just sent
+			$("#textToSend").val('');
+		});
+	</script>
 </body>
-
-<footer>
-    <!-- Respoke client library -->
-    <script src="https://cdn.respoke.io/respoke.js"></script>
-
-    <!-- jQuery, for this example -->
-    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-    
-    <!-- Some simple styles to make things perty -->
-    <link rel="stylesheet" type="text/css" href="../static/style.css"></style>
-</footer>
-
 </html>

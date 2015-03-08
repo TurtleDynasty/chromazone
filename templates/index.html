@@ -19,8 +19,7 @@
     
     <div id="messaging">
         <ul id="messages"></ul><br />
-        <input id="remoteId" placeholder="User to Message" type="text" /><br/>
-        <textarea id="textToSend" placeholder="Message to Send" rows="2"></textarea><br/>
+        <input id="textToSend" placeholder="Message to Send" rows="2"></input><br/>
         <button id='sendMessage'>Send Message</button>
     </div>
 
@@ -30,7 +29,6 @@
         // your own.
         var appid = "b4931d40-ff2b-4c46-8487-bf955a75501d";
         var endpointId;
-		var endpointImg;
 
         // Create the client object using the App ID 
         var client = respoke.createClient({
@@ -57,13 +55,8 @@
 			if (localStorage.endpointId) {
 				endpointId = localStorage.endpointId;
 			} else {
-				endpointId = Math.floor(Math.random()*100);
+				endpointId = Math.floor(Math.random()*42);
 			}
-			
-			var endpointImg = document.createElement("img");
-			endpointImg.src = "../static/cyan.png";
-			endpointImg.width = 5;
-			endpointImg.height = 5;
 			
             client.connect({
                 endpointId: endpointId // your username is the endpoint
@@ -73,25 +66,22 @@
         // Send message
         $("#sendMessage").click(function() {
             // Get the recipients name
-            var remote = $("#remoteId").val();
 
-            // Make an endpoint for that recipient
-            var endpoint = client.getEndpoint({
-                id: remote
-            });
+			for (i=0;i<42;i++) {
+				// Make an endpoint for that recipient
+				var temp = i;
+				var endpoint = client.getEndpoint({
+					id: temp.toString()
+				});
 
-            // Grab the text to send
-            var messageText = endpointId + ": " + $("#textToSend").val();
+				// Grab the text to send
+				var messageText = endpointId + ": " + $("#textToSend").val();
 
-            // Send it
-            endpoint.sendMessage({
-                message: messageText
-            });
-
-            // Show yourself the message
-            $("#messages").append(
-                "<li>" + messageText + "</li>"
-            );
+				// Send it
+				endpoint.sendMessage({
+					message: messageText
+				});
+			}
 
             // Clear the text you just sent
             $("#textToSend").val('');

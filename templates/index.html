@@ -62,9 +62,14 @@
 		});
 
 		// Connect to Respoke when the user clicks "connect"
-		$("#doLogin").click(function() {
+		$(document).ready(function() {
 			$("#status").html("Connecting...");
-			endpointId = $("#endpoint").val;
+			if (localStorage.endpointId) {
+				endpointId = localStorage.endpointId;
+			} else {
+				localStorage.endpointId = Math.random().toString(36).substring(7);
+				endpointId = localStorage.endpointId;	
+			}
 			client.connect({
 				endpointId: endpointId // your username is the endpoint
 			});

@@ -32,13 +32,13 @@
 		var endpointId;
 
 		//get location
-		function getLocation() {
-			if (navigator.geolocation) {
-				navigator.geolocation.getCurrentPosition(showPosition);
-			} else { 
-				$("#status").html("Geolocation is not supported by this browser.");
-			}
-		}
+//		function getLocation() {
+//			if (navigator.geolocation) {
+//				navigator.geolocation.getCurrentPosition(showPosition);
+//			} else { 
+//				$("#status").html("Geolocation is not supported by this browser.");
+//			}
+//		}
 		//show the lat and long
 //		function showPosition(position) {
 //			$("#status").append("<br>Latitude: " + position.coords.latitude.toFixed(3) + 
@@ -83,11 +83,11 @@
 
 		// Listen for incoming messages
 		client.listen('message', function(evt) {
-			if (Math.abs(evt.message.latitude - sessionStorage.latitude.toFixed(3)) < 0.001 && Math.abs(evt.message.longitude - sessionStorage.longitude.toFixed(3)) < 0.001) {
+//			if (Math.abs(evt.message.latitude - sessionStorage.latitude.toFixed(3)) < 0.001 && Math.abs(evt.message.longitude - sessionStorage.longitude.toFixed(3)) < 0.001) {
 			$("#messages").append(
 				"<li>" + evt.message.UID + ": " + evt.message.message + "</li>"
 			);
-			};
+//			};
 		});
 
 		// Connect to Respoke when the user clicks "connect"
@@ -96,8 +96,8 @@
 
 			if (localStorage.endpointId) {
 				endpointId = localStorage.endpointId;
-				// sessionStorage.latitude = position.coords.latitude;
-				// sessionStorage.longitude = position.coords.longitude;
+//				 sessionStorage.latitude = position.coords.latitude;
+//				 sessionStorage.longitude = position.coords.longitude;
 			} else {
 				localStorage.endpointId = Math.random().toString(36).substring(7);
 				endpointId = localStorage.endpointId;
@@ -107,7 +107,7 @@
 			client.connect({
 				endpointId: endpointId // your username is the endpoint
 			});
-			showPosition(getLocation());
+//			showPosition(getLocation());
 			group.getMembers({
     			onSuccess: function (connections) {
         			connections.forEach(function (connection) {
@@ -138,8 +138,8 @@
 			// Send it
 			group.sendMessage({
 				message: messageText,
-				latitude: sessionStorage.latitude.toFixed(3),
-				longitude: sessionStorage.longitude.toFixed(3),
+//				latitude: sessionStorage.latitude.toFixed(3),
+//				longitude: sessionStorage.longitude.toFixed(3),
 				UID: endpointId
 			});
 

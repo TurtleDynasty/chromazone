@@ -58,7 +58,7 @@
         // Connect to Respoke when the user clicks "connect"
         $(document).ready(function() {
             $("#status").html("Connecting...");
-            endpointId = Math.random().toString(36).substring(7);
+            endpointId = $("#endpoint").val;
             client.connect({
                 endpointId: endpointId // your username is the endpoint
             });

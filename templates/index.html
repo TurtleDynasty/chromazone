@@ -14,8 +14,8 @@
 <body>
     <h3 id="status">Not Connected</h3>
     <div id="login">
-        <input id="endpoint" placeholder="Username" type="text" />
-        <button id="doLogin">Connect</button>
+        <div id="endpoint" placeholder="Username" type="text" ></div>
+        
     </div>
     
     <div id="messaging">
@@ -28,8 +28,9 @@
 		// App ID value from the dev portal. You can play
 		// around with the supplied ID or replace it with
 		// your own.
-		var appid = "c5079ec6-3404-4e72-9061-78b7e3e87472";
+		var appid = "3a1f70bf-a7f6-45cd-b610-1b9e2fedb5a1";
 		var endpointId;
+
 		//get location
 		function getLocation() {
 			if (navigator.geolocation) {
@@ -40,63 +41,111 @@
 		}
 		//show the lat and long
 		function showPosition(position) {
-			$("#status").append("<br>Latitude: " + position.coords.latitude + 
-			"<br>Longitude: " + position.coords.longitude);  
+			$("#status").append("<br>Latitude: " + position.coords.latitude.toFixed(3) + 
+			"<br>Longitude: " + position.coords.longitude.toFixed(3));  
 		}
 		// Create the client object using the App ID 
 		var client = respoke.createClient({
 			appId: appid,
-			developmentMode: true
+			developmentMode: true,
+			'App-Secret': "6c414cdd-e392-4261-8254-03a6c88b98b6"
 		});
+
+		// client.auth.connect({
+		// 	endpointId: endpointId
+		// });
 
 		// "connect" event fired after successful connection to Respoke
 		client.listen('connect', function() {
+			// client.groups.publish({
+			// 	groupId:groupId,
+			// 	message:"Hello Group!"
+			// }).then(function (response) {
+			// 	console.log(response);
+			// 	client.close();
+			// }).catch(function (error) {
+			// 	console.log(error);
+			// 	client.close();
+			// });
 			$("#status").html("Connected to Respoke as \"" + endpointId + "\"");
+			client.group.join({id:"everyone"});
 		});
+
+		var group = client.getGroup({ id: "everyone"});
+
+		// client.group.join().done(function () {
+  //   		group.sendMessage({
+  //       		message: "Hey, ppl! I'm here!"
+  //   		});
+  //   	}, function (err) {
+  //   		// Couldn't join the group, possibly permissions error
+		// });
 
 		// Listen for incoming messages
 		client.listen('message', function(evt) {
+			if (Math.abs(evt.message.latitude - sessionStorage.latitude.toFixed(3)) < 0.001 && Math.abs(evt.message.longitude - sessionStorage.longitude.toFixed(3)) < 0.001) {
 			$("#messages").append(
-				"<li>" + evt.message.message + "</li>"
+				"<li>" + evt.message.UID + ": " + evt.message.message + "</li>"
 			);
+			};
 		});
 
 		// Connect to Respoke when the user clicks "connect"
 		$(document).ready(function() {
 			$("#status").html("Connecting...");
+
 			if (localStorage.endpointId) {
 				endpointId = localStorage.endpointId;
+				// sessionStorage.latitude = position.coords.latitude;
+				// sessionStorage.longitude = position.coords.longitude;
 			} else {
 				localStorage.endpointId = Math.random().toString(36).substring(7);
-				endpointId = localStorage.endpointId;	
+				endpointId = localStorage.endpointId;
+				sessionStorage.latitude = position.coords.latitude;
+				sessionStorage.longitude = position.coords.longitude;
 			}
 			client.connect({
 				endpointId: endpointId // your username is the endpoint
 			});
 			showPosition(getLocation());
+			group.getMembers({
+    			onSuccess: function (connections) {
+        			connections.forEach(function (connection) {
+            		 	console.log(connection.endpoint.id);
+        			});
+    			}
+			});
 		});
+
+
 
 		// Send message
 		$("#sendMessage").click(function() {
-			// Get the recipients name
-			var remote = $("#remoteId").val();
-
-			// Make an endpoint for that recipient
-			var endpoint = client.getEndpoint({
-				id: remote
-			});
-
 			// Grab the text to send
 			var messageText = $("#textToSend").val();
 
+			// don't send blank messages
+			//if (messageText.trim().length === 0) return;
+
+			// Get the recipients name
+			//var remote = $("#remoteId").val();
+
+			// Make an endpoint for that recipient
+			// var endpoint = client.getEndpoint({
+			// 	id: remote
+			// });
+
 			// Send it
-			endpoint.sendMessage({
-				message: messageText
+			group.sendMessage({
+				message: messageText,
+				latitude: sessionStorage.latitude.toFixed(3),
+				longitude: sessionStorage.longitude.toFixed(3),
+				UID: endpointId
 			});
 
 			// Show yourself the message
 			$("#messages").append(
-				"<li>" + messageText + "</li>"
+				"<li>" + endpointId + ": " + messageText + "</li>"
 			);
 
 			// Clear the text you just sent

@@ -76,7 +76,7 @@
 
         // "connect" event fired after successful connection to Respoke
         client.listen('connect', function() {
-            $("#status").html("You are user number \"" + endpointId + "\"");
+            $("#status").html("You are user number " + endpointId );
         });
 
         // Listen for incoming messages
@@ -146,7 +146,8 @@
                 var lon = $.cookie("posLon");
 
 				// Grab the text to send
-				var messageText = lat+":"+lon+":"+endpointId + ": " + $("#textToSend").val();
+                // keep lat and lon out of the message when not debugging
+				var messageText = /*lat+":"+lon+":"+*/endpointId + ": " + $("#textToSend").val();
 
 				// Send it
 				endpoint.sendMessage({

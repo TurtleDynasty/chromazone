@@ -53,6 +53,21 @@
              
         }
 
+        function measure(lat1, lon1, lat2, lon2){  // generally used geo measurement function
+            //http://stackoverflow.com/a/11172685
+            //http://www.movable-type.co.uk/scripts/latlong.html
+            var R = 6378.137; // Radius of earth in KM
+            var dLat = (lat2 - lat1) * Math.PI / 180;
+            var dLon = (lon2 - lon1) * Math.PI / 180;
+            var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            var d = R * c;
+            return d * 1000; // meters
+        }
+
+
         // Create the client object using the App ID 
         var client = respoke.createClient({
             appId: appid,
@@ -81,17 +96,16 @@
             var longitude = messageNoLat.slice(0,index);
             var messageNoLatNoLon = messageNoLat.slice(index+1,evt.message.message.length);
 
-            // var output = '';
-            // for (var property in evt.message) {
-            //   output += property + ': ' + evt.message[property]+'; ';
-            // }
+            //convert lat long to a meter distance
+            dist = measure(latitude, longitude, lat, lon);
 
             //compare the lat and lon of user and sender of message
-            console.log(latitude);
-            console.log(longitude);
-            console.log(acc);
+            console.log("lat:"+latitude);
+            console.log("long:"+longitude);
+            console.log("acc:"+acc);
+            console.log("dist:"+dist)
 
-            if ((latitude - lat) < acc * 1 && (longitude - lon) < acc * 1) {
+            if (dist < (acc )) {
                 $("#messages").append(
                     "<li>" + messageNoLatNoLon + "</li>"
                 );
@@ -102,19 +116,19 @@
         $("document").ready(function() {
             $("#status").html("Connecting...");
             getLocation();
-            console.log("Hey");
+            // console.log("Hey");
 			if (localStorage.endpointId) {
 				endpointId = localStorage.endpointId;
                 console.log("not");
 			} else {
 				endpointId = Math.floor(Math.random()*42);
-                console.log("here");
+                // console.log("here");
 			}
-            console.log("yo");
+            // console.log("yo");
             client.connect({
                 endpointId: endpointId // your username is the endpoint
             });
-            console.log("done");
+            console.log("Connected");
         });
 
         // Send message

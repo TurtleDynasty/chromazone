@@ -66,22 +66,34 @@
 
         // Listen for incoming messages
         client.listen('message', function(evt) {
+            //save the lat and long of the user
             var lat = $.cookie("posLat");
             var lon = $.cookie("posLon");
             var acc = $.cookie("posAccuracy");
-
+            //find the lat and long of the message sender
+            //by searching for the first ":" and slicing it off
+            //and etc. for longitude
             var index = evt.message.message.search(":");
             var latitude = evt.message.message.slice(0,index);
-            var messag = evt.message.message.slice(index+1,evt.message.message.length)
+            var messageNoLat = evt.message.message.slice(index+1,evt.message.message.length);
+
+            var index = messageNoLat.search(":");
+            var longitude = messageNoLat.slice(0,index);
+            var messageNoLatNoLon = messageNoLat.slice(index+1,evt.message.message.length);
 
             // var output = '';
             // for (var property in evt.message) {
             //   output += property + ': ' + evt.message[property]+'; ';
             // }
-             console.log(latitude - lat);
-            if (latitude - lat < acc * 10) {
+
+            //compare the lat and lon of user and sender of message
+            console.log(latitude);
+            console.log(longitude);
+            console.log(acc);
+
+            if ((latitude - lat) < acc * 1 && (longitude - lon) < acc * 1) {
                 $("#messages").append(
-                    "<li>" + messag + "</li>"
+                    "<li>" + messageNoLatNoLon + "</li>"
                 );
             }
         });
@@ -120,7 +132,7 @@
                 var lon = $.cookie("posLon");
 
 				// Grab the text to send
-				var messageText = lat+":"+endpointId + ": " + $("#textToSend").val();
+				var messageText = lat+":"+lon+":"+endpointId + ": " + $("#textToSend").val();
 
 				// Send it
 				endpoint.sendMessage({

@@ -26,9 +26,7 @@
     <h3 id="location">Not Connected</h3>
 
     <script type="text/javascript">
-        // App ID value from the dev portal. You can play
-        // around with the supplied ID or replace it with
-        // your own.
+        // App ID value from the dev portal.
         var appid = "b4931d40-ff2b-4c46-8487-bf955a75501d";
         var endpointId;
         
@@ -147,7 +145,7 @@
 
 				// Grab the text to send
                 // keep lat and lon out of the message when not debugging
-				var messageText = /*lat+":"+lon+":"+*/endpointId + ": " + $("#textToSend").val();
+				var messageText = lat+":"+lon+":"+endpointId + ": " + $("#textToSend").val();
 
 				// Send it
 				endpoint.sendMessage({

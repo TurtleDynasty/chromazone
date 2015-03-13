@@ -17,6 +17,9 @@
 </head>
 
 <body>
+	<!--this is the user image, it starts blank and is populated with js at towards the bottom
+		<img id="userImg"> -->
+	
 	<div id="particles-js"></div>
     <div class="container row">
     <div class="col-md-6 col-sm-offset-3">
@@ -42,7 +45,7 @@
     <script type="text/javascript">
         // App ID value from the dev portal.
         var appid = "b4931d40-ff2b-4c46-8487-bf955a75501d";
-        var endpointId;
+        var endpointId=0;
         
         //get dat location
         function getLocation() {
@@ -170,6 +173,18 @@
             // Clear the text you just sent
             $("#textToSend").val('');
         });
+	
+		// the following creates a random user image
+		var color = "../static/color/".concat(Math.floor(Math.random()*9), '.png');
+		var shape = "../static/shape/".concat(Math.floor(Math.random()*9), '.png');
+	
+		var img = document.createElement("img");
+		img.style.background = "url("+color+")";
+		img.src = shape;
+		
+		document.getElementById("userImg").style.background = "url("+color+")";
+		document.getElementById("userImg").src = shape;
+		// end random user image
     </script>
     </div>
     </div>

@@ -23,10 +23,23 @@
         <div id="endpoint" placeholder="Username" type="text" ></div>
     </div>
     
-    <div id="messaging">
+    <div id="messaging" class="input-group">
         <ul id="messages"></ul><br />
-        <input id="textToSend" placeholder="Message to Send" rows="2"></input><br/>
-        <button id='sendMessage'>Send Message</button>
+        <div class="input-group">
+            <input type="text" id="textToSend" class="form-control" placeholder="Message to Send" rows="2"/>
+            	<span class="input-group-addon" id='sendMessage'>Send Message</span>
+        </div>
+        <br/>
+        
+        
+        <div class="input-group">
+  <input type="text" class="form-control" placeholder="Recipient's username" aria-describedby="basic-addon2">
+  <span class="input-group-addon" id="basic-addon2">@example.com</span>
+</div>
+        
+        
+        
+        
     </div>
     <h3 id="location">Not Connected</h3>
 

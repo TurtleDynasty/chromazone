@@ -17,13 +17,12 @@
 </head>
 
 <body>
-	<!--this is the user image, it starts blank and is populated with js at towards the bottom
-		<img id="userImg"> -->
+	<!--this is the user image, it starts blank and is populated with js at towards the bottom <img id="userImg"> -->
 	
 	<div id="particles-js"></div>
     <div class="container row">
     <div class="col-md-6 col-sm-offset-3">
-    <h2 id="status">Not Connected</h2>
+    <h2 id="status">Not Connected</h2><img id="userImg">
     <div id="login">
         <div id="endpoint" placeholder="Username" type="text" ></div>
     </div>
@@ -34,11 +33,7 @@
             <input type="text" id="textToSend" class="form-control" placeholder="Message to Send" rows="2"/>
             	<span class="input-group-addon" id='sendMessage'>Send Message</span>
         </div>
-        <br/>
-        
-        
-        
-        
+        <br/>    
     </div>
     <h2 id="location" class="table">Not Connected</h2>
 
@@ -92,6 +87,7 @@
         // "connect" event fired after successful connection to Respoke
         client.listen('connect', function() {
             $("#status").html("You are user number " + endpointId );
+			//randImage();
         });
 
         // Listen for incoming messages
@@ -162,7 +158,8 @@
 
 				// Grab the text to send
                 // keep lat and lon out of the message when not debugging
-				var messageText = lat+":"+lon+":"+endpointId + ": " + $("#textToSend").val();
+				document.body.appendChild(userImg);
+				var messageText = ": " + $("#textToSend").val();
 
 				// Send it
 				endpoint.sendMessage({
@@ -173,18 +170,20 @@
             // Clear the text you just sent
             $("#textToSend").val('');
         });
-	
-		// the following creates a random user image
-		var color = "../static/color/".concat(Math.floor(Math.random()*9), '.png');
-		var shape = "../static/shape/".concat(Math.floor(Math.random()*9), '.png');
-	
-		var img = document.createElement("img");
-		img.style.background = "url("+color+")";
-		img.src = shape;
+
+		function randImage() {
+			// the following creates a random user image
+			var color = "../static/color/".concat(Math.floor(Math.random()*9), '.png');
+			var shape = "../static/shape/".concat(Math.floor(Math.random()*9), '.png');
 		
-		document.getElementById("userImg").style.background = "url("+color+")";
-		document.getElementById("userImg").src = shape;
-		// end random user image
+			var img = document.createElement("img");
+			img.style.background = "url("+color+")";
+			img.src = shape;
+			
+			document.getElementById("userImg").style.background = "url("+color+")";
+			document.getElementById("userImg").src = shape;
+			// end random user image
+		}
     </script>
     </div>
     </div>
